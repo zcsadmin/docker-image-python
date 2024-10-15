@@ -2,6 +2,15 @@
 
 Docker images used for ZCS Python applications.
 
+Supported python versions:
+
+- `3.11`
+
+Supported platforms:
+
+- `linux/amd64`
+- `linux/arm64`
+
 ## Example usage
 
 ZCS Python docker images are available in three flavours:
