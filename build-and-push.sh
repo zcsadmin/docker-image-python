@@ -10,6 +10,6 @@ docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=
 
 docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull --push --target base -t zcscompany/python:3.11-dist .
 
-docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull --push --target torch-cpu -t zcscompany/python:3.11-torch-cpu-2.4.0 .
+docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull --push --target torch-cpu -t zcscompany/python:3.11-torch-cpu-2.5.0 .
 
 docker buildx stop container

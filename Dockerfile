@@ -45,6 +45,6 @@ FROM base AS dist
 #
 FROM base AS torch-cpu
 
-# Install torch 2.4.0 cpu
-RUN pip install --prefix "/home/${DOCKER_USER}/.local" --no-cache-dir --disable-pip-version-check torch==2.4.0 --index-url https://download.pytorch.org/whl/cpu
+# Install torch 2.5.0 cpu
+RUN pip install --prefix "/home/${DOCKER_USER}/.local" --no-cache-dir --disable-pip-version-check torch==2.5.0 --index-url https://download.pytorch.org/whl/cpu
 
