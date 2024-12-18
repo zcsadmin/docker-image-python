@@ -1,7 +1,9 @@
+ARG PYTHON_VERSION=3.11
+
 #
 # Base image
 #
-FROM python:3.11-slim-bookworm AS base
+FROM python:${PYTHON_VERSION}-slim-bookworm AS base
 
 ARG DOCKER_USER=bob
 ARG DOCKER_GROUP=bob
@@ -45,6 +47,8 @@ FROM base AS dist
 #
 FROM base AS torch-cpu
 
-# Install torch 2.5.0 cpu
-RUN pip install --prefix "/home/${DOCKER_USER}/.local" --no-cache-dir --disable-pip-version-check torch==2.5.0 --index-url https://download.pytorch.org/whl/cpu
+ARG TORCH_VERSION
+
+# Install torch cpu
+RUN pip install --prefix "/home/${DOCKER_USER}/.local" --no-cache-dir --disable-pip-version-check torch==${TORCH_VERSION} --index-url https://download.pytorch.org/whl/cpu
 

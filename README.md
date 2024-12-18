@@ -4,7 +4,15 @@ Docker images used for ZCS Python applications.
 
 Supported python versions:
 
+- `3.12`
 - `3.11`
+
+Supported torch versions:
+
+- `2.4.0`
+- `2.4.1`
+- `2.5.0`
+- `2.5.1`
 
 Supported platforms:
 
@@ -84,32 +92,6 @@ RUN python -m build && \
     pip install --user --no-cache-dir --disable-pip-version-check --editable .
 ```
 
-## Build images
-
-### Base image
-
-```bash
-docker build --pull --target base -t zcscompany/python:3.11-base .
-```
-
-### Dev image
-
-```bash
-docker build --pull --target dev -t zcscompany/python:3.11-dev .
-```
-
-### Dist image
-
-```bash
-docker build --pull --target base -t zcscompany/python:3.11-dist .
-```
-
-### Torch-cpu image
-
-```bash
-docker build --pull --target torch-cpu -t zcscompany/python:3.11-torch-cpu-2.4.0 .
-```
-
 ## Docker hub repository
 
 https://hub.docker.com/r/zcscompany/python
@@ -117,4 +99,5 @@ https://hub.docker.com/r/zcscompany/python
 
 ## Support
 
-[Madnesslab Team @ Zucchetti Centro Sistemi](mailto:madnesslab@zcscompany.com)
+[Claudio Cavina](mailto:c.cavina@zcscompany.com)  
+[Michele Mondelli](mailto:m.mondelli@zcscompany.com)
