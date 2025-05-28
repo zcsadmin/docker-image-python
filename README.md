@@ -14,6 +14,7 @@ Supported torch versions:
 - `2.5.0`
 - `2.5.1`
 - `2.6.0`
+- `2.7.0`
 
 Supported platforms:
 
