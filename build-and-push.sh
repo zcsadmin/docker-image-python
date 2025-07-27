@@ -28,7 +28,7 @@ docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=
 
 docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target torch-cpu --build-arg TORCH_VERSION=2.6.0 -t zcscompany/python:3.11-torch-cpu-2.6.0 .
 
-docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target torch-cpu --build-arg TORCH_VERSION=2.6.0 -t zcscompany/python:3.11-torch-cpu-2.7.0 .
+docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target torch-cpu --build-arg TORCH_VERSION=2.7.0 -t zcscompany/python:3.11-torch-cpu-2.7.0 .
 
 docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target torch-cpu --build-arg PYTHON_VERSION=3.12 --build-arg TORCH_VERSION=2.4.0 -t zcscompany/python:3.12-torch-cpu-2.4.0 .
 
@@ -40,6 +40,6 @@ docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=
 
 docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target torch-cpu --build-arg PYTHON_VERSION=3.12 --build-arg TORCH_VERSION=2.6.0 -t zcscompany/python:3.12-torch-cpu-2.6.0 .
 
-docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target torch-cpu --build-arg PYTHON_VERSION=3.12 --build-arg TORCH_VERSION=2.6.0 -t zcscompany/python:3.12-torch-cpu-2.7.0 .
+docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target torch-cpu --build-arg PYTHON_VERSION=3.12 --build-arg TORCH_VERSION=2.7.0 -t zcscompany/python:3.12-torch-cpu-2.7.0 .
 
 docker buildx stop container
