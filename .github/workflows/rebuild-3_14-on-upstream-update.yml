@@ -1,0 +1,73 @@
+name: Rebuild 3.14 On Upstream Update
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild-if-upstream-changed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
+
+      - name: Read latest upstream digest
+        id: latest
+        run: |
+          set -euo pipefail
+          digest="$(skopeo inspect --format '{{.Digest}}' docker://python:3.14-slim-bookworm)"
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+
+      - name: Read stored digest
+        id: stored
+        run: |
+          set -euo pipefail
+          file=".github/state/python-3.14-slim-bookworm.digest"
+          if [ -f "$file" ]; then
+            echo "digest=$(cat "$file")" >> "$GITHUB_OUTPUT"
+          else
+            echo "digest=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Print digest comparison
+        run: |
+          echo "latest: ${{ steps.latest.outputs.digest }}"
+          echo "stored: ${{ steps.stored.outputs.digest }}"
+
+      - name: Login to Docker Hub
+        if: steps.latest.outputs.digest != steps.stored.outputs.digest
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build and push 3.14 images
+        if: steps.latest.outputs.digest != steps.stored.outputs.digest
+        run: |
+          set -euo pipefail
+          bash ./build-and-push-3_14.sh
+
+      - name: Persist latest digest
+        if: steps.latest.outputs.digest != steps.stored.outputs.digest
+        run: |
+          set -euo pipefail
+          mkdir -p .github/state
+          echo "${{ steps.latest.outputs.digest }}" > .github/state/python-3.14-slim-bookworm.digest
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/state/python-3.14-slim-bookworm.digest
+          git commit -m "chore: track python 3.14 slim-bookworm digest" || exit 0
+          git push
+
+      - name: Skip build when unchanged
+        if: steps.latest.outputs.digest == steps.stored.outputs.digest
+        run: echo "Upstream python:3.14-slim-bookworm digest unchanged. Skipping build."

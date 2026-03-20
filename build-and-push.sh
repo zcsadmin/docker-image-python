@@ -10,13 +10,13 @@ docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=
 
 docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target dev -t zcscompany/python:3.11-dev .
 
-docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target base -t zcscompany/python:3.11-dist .
+docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target dist -t zcscompany/python:3.11-dist .
 
 docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target base --build-arg PYTHON_VERSION=3.12 -t zcscompany/python:3.12-base .
 
 docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target dev --build-arg PYTHON_VERSION=3.12 -t zcscompany/python:3.12-dev .
 
-docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target base --build-arg PYTHON_VERSION=3.12 -t zcscompany/python:3.12-dist .
+docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target dist --build-arg PYTHON_VERSION=3.12 -t zcscompany/python:3.12-dist .
 
 docker buildx build --platform linux/amd64,linux/arm64 --sbom=true --provenance=true --builder=container --pull ${PUSH} --target torch-cpu --build-arg TORCH_VERSION=2.4.0 -t zcscompany/python:3.11-torch-cpu-2.4.0 .
 

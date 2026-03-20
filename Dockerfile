@@ -8,6 +8,10 @@ FROM python:${PYTHON_VERSION}-slim-bookworm AS base
 ARG DOCKER_USER=bob
 ARG DOCKER_GROUP=bob
 
+# Persist runtime metadata used by fix-perm.sh in downstream images
+ENV DOCKER_USER=${DOCKER_USER} \
+    DOCKER_GROUP=${DOCKER_GROUP}
+
 # Add normal user that will use the container
 RUN set -ex; addgroup --gid 1000 ${DOCKER_GROUP} && \
     adduser --ingroup ${DOCKER_GROUP} --uid 1000 --disabled-password ${DOCKER_USER} 
