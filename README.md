@@ -2,6 +2,8 @@
 
 Docker images used for ZCS Python applications.
 
+Licensed under the [MIT License](LICENSE).
+
 Supported python versions:
 
 | Version | Debian base |
