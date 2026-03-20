@@ -4,10 +4,14 @@ Docker images used for ZCS Python applications.
 
 Supported python versions:
 
-- `3.11`
-- `3.12`
-- `3.13`
-- `3.14`
+| Version | Debian base |
+|---------|-------------|
+| `3.11`  | `bookworm`  |
+| `3.12`  | `bookworm`  |
+| `3.13`  | `trixie`    |
+| `3.14`  | `trixie`    |
+
+Note: Python 3.11 and 3.12 are based on Debian Bookworm (stable). Python 3.13 and 3.14 are based on Debian Trixie (testing), which is required because the official `python:3.13-slim-bookworm` and `python:3.14-slim-bookworm` images are not available upstream.
 
 Supported torch versions:
 
@@ -187,6 +191,8 @@ The images in this repository are published to Docker Hub and versioned by tag.
 Docker Hub page:
 
 https://hub.docker.com/r/zcscompany/python
+
+Refer to the Docker Hub page for the complete and up-to-date list of available image tags, as not all version combinations listed in this README may have a published image.
 
 In most cases you can use these images directly in your application Dockerfiles (for example `FROM zcscompany/python:3.11-dist`) without rebuilding this repository locally.
 

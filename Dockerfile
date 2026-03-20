@@ -1,9 +1,10 @@
 ARG PYTHON_VERSION=3.11
+ARG DEBIAN_VERSION=bookworm
 
 #
 # Base image
 #
-FROM python:${PYTHON_VERSION}-slim-bookworm AS base
+FROM python:${PYTHON_VERSION}-slim-${DEBIAN_VERSION} AS base
 
 ARG DOCKER_USER=bob
 ARG DOCKER_GROUP=bob
