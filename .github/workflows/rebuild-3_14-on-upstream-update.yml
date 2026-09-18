@@ -25,14 +25,14 @@ jobs:
         id: latest
         run: |
           set -euo pipefail
-          digest="$(skopeo inspect --format '{{.Digest}}' docker://python:3.14-slim-bookworm)"
+          digest="$(skopeo inspect --format '{{.Digest}}' docker://python:3.14-slim-trixie)"
           echo "digest=${digest}" >> "$GITHUB_OUTPUT"
 
       - name: Read stored digest
         id: stored
         run: |
           set -euo pipefail
-          file=".github/state/python-3.14-slim-bookworm.digest"
+          file=".github/state/python-3.14-slim-trixie.digest"
           if [ -f "$file" ]; then
             echo "digest=$(cat "$file")" >> "$GITHUB_OUTPUT"
           else
@@ -60,14 +60,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .github/state
-          echo "${{ steps.latest.outputs.digest }}" > .github/state/python-3.14-slim-bookworm.digest
+          echo "${{ steps.latest.outputs.digest }}" > .github/state/python-3.14-slim-trixie.digest
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/state/python-3.14-slim-bookworm.digest
-          git commit -m "chore: track python 3.14 slim-bookworm digest" || exit 0
+          git add .github/state/python-3.14-slim-trixie.digest
+          git commit -m "chore: track python 3.14 slim-trixie digest" || exit 0
           git push
 
       - name: Skip build when unchanged
         if: steps.latest.outputs.digest == steps.stored.outputs.digest
-        run: echo "Upstream python:3.14-slim-bookworm digest unchanged. Skipping build."
+        run: echo "Upstream python:3.14-slim-trixie digest unchanged. Skipping build."
