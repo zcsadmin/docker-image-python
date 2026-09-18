@@ -1,0 +1,95 @@
+name: Rebuild 3.11/3.12 On Upstream Update
+
+on:
+  schedule:
+    - cron: "0 4 */7 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild-if-upstream-changed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
+
+      - name: Read latest upstream digests
+        id: latest
+        run: |
+          set -euo pipefail
+          digest_311="$(skopeo inspect --format '{{.Digest}}' docker://python:3.11-slim-bookworm)"
+          digest_312="$(skopeo inspect --format '{{.Digest}}' docker://python:3.12-slim-bookworm)"
+          echo "digest_311=${digest_311}" >> "$GITHUB_OUTPUT"
+          echo "digest_312=${digest_312}" >> "$GITHUB_OUTPUT"
+
+      - name: Read stored digests
+        id: stored
+        run: |
+          set -euo pipefail
+          file_311=".github/state/python-3.11-slim-bookworm.digest"
+          file_312=".github/state/python-3.12-slim-bookworm.digest"
+          if [ -f "$file_311" ]; then
+            echo "digest_311=$(cat "$file_311")" >> "$GITHUB_OUTPUT"
+          else
+            echo "digest_311=" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -f "$file_312" ]; then
+            echo "digest_312=$(cat "$file_312")" >> "$GITHUB_OUTPUT"
+          else
+            echo "digest_312=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Print digest comparison
+        run: |
+          echo "3.11 latest: ${{ steps.latest.outputs.digest_311 }}"
+          echo "3.11 stored: ${{ steps.stored.outputs.digest_311 }}"
+          echo "3.12 latest: ${{ steps.latest.outputs.digest_312 }}"
+          echo "3.12 stored: ${{ steps.stored.outputs.digest_312 }}"
+
+      - name: Compare digests
+        id: compare
+        run: |
+          set -euo pipefail
+          changed=false
+          if [ "${{ steps.latest.outputs.digest_311 }}" != "${{ steps.stored.outputs.digest_311 }}" ] \
+            || [ "${{ steps.latest.outputs.digest_312 }}" != "${{ steps.stored.outputs.digest_312 }}" ]; then
+            changed=true
+          fi
+          echo "changed=${changed}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to Docker Hub
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build and push 3.11/3.12 images
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          bash ./build-and-push.sh
+
+      - name: Persist latest digests
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p .github/state
+          echo "${{ steps.latest.outputs.digest_311 }}" > .github/state/python-3.11-slim-bookworm.digest
+          echo "${{ steps.latest.outputs.digest_312 }}" > .github/state/python-3.12-slim-bookworm.digest
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/state/python-3.11-slim-bookworm.digest .github/state/python-3.12-slim-bookworm.digest
+          git commit -m "chore: track python 3.11/3.12 slim-bookworm digests" || exit 0
+          git push
+
+      - name: Skip build when unchanged
+        if: steps.compare.outputs.changed == 'false'
+        run: echo "Upstream python:3.11-slim-bookworm and python:3.12-slim-bookworm digests unchanged. Skipping build."

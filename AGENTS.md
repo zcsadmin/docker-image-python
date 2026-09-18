@@ -39,7 +39,12 @@ Multi-arch builds need a buildx builder with the `docker-container` driver; the 
 
 ## CI
 
-Two scheduled workflows (every 7 days, plus manual dispatch) rebuild the 3.13 and 3.14 images only when the upstream digest of `python:3.1X-slim-trixie` (checked via `skopeo`) changes. On change the workflow logs into Docker Hub (secrets), runs the matching build script, and commits the new digest to `.github/state/python-3.1X-slim-trixie.digest`. There are no workflows for 3.11/3.12.
+Three scheduled workflows (every 7 days, staggered 00:00/02:00/04:00, plus manual dispatch) rebuild images only when the upstream base digest (checked via `skopeo`) changes:
+
+- `rebuild-3_11-3_12-on-upstream-update.yml` watches **both** `python:3.11-slim-bookworm` and `python:3.12-slim-bookworm`; since both versions are built by the single `build-and-push.sh`, a change to either digest triggers one run of that script, and both digests get committed.
+- `rebuild-3_13/3_14-on-upstream-update.yml` each watch `python:3.1X-slim-trixie` and run their own script.
+
+On change the workflow logs into Docker Hub (secrets), runs the build script, and commits the new digest(s) to `.github/state/*.digest`.
 
 ## Downstream usage quirks
 
