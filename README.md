@@ -2,7 +2,15 @@
 
 Docker images used for ZCS Python applications.
 
-Licensed under the [MIT License](LICENSE).
+## Why a custom image?
+
+ZCS applications standardize on their own runtime images instead of using the upstream ones directly, so that every technology shares the same conventions:
+
+- **Non-root user `bob`**: containers run as the `bob` user (never `root`), with predictable uid/gid across images built from different base distributions.
+- **A fix-perm script**: the `dev` image ships `/fix-perm.sh`, which re-aligns `bob`'s uid/gid to the developer's local user, so files and directories bind-mounted from the host keep the developer's ownership while running in the container.
+- **`/app` as working directory**: every image works in `/app`, and mounted source code lives there.
+- **Three flavours**: `base`, `dev` and `dist` provide the same mental model across projects, regardless of the underlying technology.
+- **Preinstalled runtimes**: technology-specific images can ship heavy dependencies out of the box (for Python this is the `torch-cpu` variant), so downstream builds stay fast and reproducible.
 
 Supported python versions:
 
@@ -212,7 +220,19 @@ docker run --rm -it zcscompany/python:3.11-dist python --version
 ```
 
 
+## Related projects
+
+The same conventions are applied to the other ZCS runtimes:
+
+- [docker-image-node](https://github.com/zcsadmin/docker-image-node) — ZCS Node docker images
+- [docker-image-java](https://github.com/zcsadmin/docker-image-java) — ZCS Java docker images
+
+## License
+
+This code is released under the [MIT License](LICENSE).
+
 ## Support
 
-[Claudio Cavina](mailto:c.cavina@zcscompany.com)  
-[Michele Mondelli](mailto:m.mondelli@zcscompany.com)
+This code has been developed and released by Laboratorio della Follia, an R&D division of Zucchetti Centro Sistemi.
+
+For support contact Michele Mondelli ([m.mondelli@zcscompany.com](mailto:m.mondelli@zcscompany.com)) or Claudio Cavina ([c.cavina@zcscompany.com](mailto:c.cavina@zcscompany.com)).
