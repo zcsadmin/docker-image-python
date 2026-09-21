@@ -2,7 +2,7 @@ name: Rebuild 3.13 On Upstream Update
 
 on:
   schedule:
-    - cron: "0 2 */7 * *"
+    - cron: "0 2 * * *"
   workflow_dispatch:
 
 permissions:
